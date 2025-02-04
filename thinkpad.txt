@@ -1,0 +1,9 @@
+1. To get all the users we need use all 
+    we will respond with status and all the users
+2. For the post validation we have to validate the user
+3. To post a user we nee
+
+// in the (db.js/checkuser) find a more efficient way to check for the user by username if they exist
+// in (user.js/post) replace fetchuser with checkuser
+//after replacing make sure i pass all the variables to the function that follows to allow for registration, also hash the password
+// 

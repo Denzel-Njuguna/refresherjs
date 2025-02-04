@@ -1,0 +1,15 @@
+1.when validating an item that is passed as a parameter i.e /users/:id
+    when validating use param from express-validator
+    e.g  param("id")
+            .notEmpty()
+            .withMessage("this should not be empty")
+            .isString()
+            .withMessage('it should be a string only'),
+2.when validating body values like json() use body from express-validator
+    e.g body("username")
+            .notEmpty()
+            .withMessage("this field should not be empty")
+            .isLength({min:3,max:15})
+            .withMessage("should be of min length 3 characters and max 15")
+3. when using a select statement don't use returning keyword since it is already going to return,
+   just specify what you want it to return after writing select
