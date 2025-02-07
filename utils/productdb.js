@@ -30,4 +30,5 @@ const fetchproduct = (async (req,res) => {
         console.log(`there is an error ${error} fetchproduct`)
     }
 })
+
 module.exports = {fetchproducts,fetchproduct}

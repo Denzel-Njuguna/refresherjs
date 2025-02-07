@@ -1,7 +1,7 @@
 const {Router} = require('express')
 const {validationResult,matchedData} = require("express-validator")
 const userroutes = Router()
-const {postvalidation,fetchidvalidation} = require("../utils/validation")
+const {postuservalidation,fetchidvalidation} = require("../utils/validation")
 const {postuser,fetchuser,fetchusers,closeconnection,checkuser} = require("../utils/db")
 
 userroutes.get('/users',fetchusers,(req,res)=>{
@@ -25,7 +25,7 @@ fetchuser
 
 
 userroutes.post("/users",
-    postvalidation,
+    postuservalidation,
     async (req,res,next)=>{
         const result = validationResult(req)
         console.log(result)

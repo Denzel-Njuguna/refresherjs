@@ -8,7 +8,7 @@ const logvalidationend = (req,res,next)=>{
     console.log("the validation has ended")
     next()
 }
-const postvalidation = [
+const postuservalidation = [
     logvalidationstart,
     body("username")
         .notEmpty()
@@ -40,4 +40,17 @@ const fetchidvalidation = [
     logvalidationend
 ]
 
-module.exports = {fetchidvalidation,postvalidation}
+const postproductvalidation = [
+    body("name")
+        .notEmpty()
+        .withMessage("this field should be filled")
+        .isString()
+        .withMessage("should be a string"),
+    body("description")
+        .notEmpty()
+        .withMessage("this field should be filled")
+        .isString()
+        .withMessage("should be a string")
+]
+
+module.exports = {fetchidvalidation,postuservalidation,postproductvalidation}

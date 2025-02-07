@@ -13,3 +13,20 @@
             .withMessage("should be of min length 3 characters and max 15")
 3. when using a select statement don't use returning keyword since it is already going to return,
    just specify what you want it to return after writing select
+4. MULTER
+    - first you define the storage engine which takes several things into consideration 
+        which are:- 1.destination i.e
+                    destination:(req,file,cb)=>{
+                        // The callback (cb) is called with two arguments:
+                        // 1. Error (if any), here it's null because no error occurs.
+                        // 2. The destination folder.
+                        cb(null,'../components/image_uploads')
+                        }
+                    2.filename: this is where you create a unique name for the file i.e
+                    filename:(req,file,cb)=>{
+                        //this basically creates a unique suffix for the file using date and math fn
+                        const suffix = Date.now() + "_" + Math.round(Math.random() * 1e9)
+                        // this retrieves the file format
+                        const ext = path.extname(file.originalname)
+                        cb = file.name+"_"+ suffix+ext
+                        }
