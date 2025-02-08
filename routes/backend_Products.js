@@ -59,6 +59,12 @@ productroutes.post('/products',
                 }
                 const {name,description} = req.body 
                 const files = req.files
+                if (!files || files.length == 0 ){
+                    return res.send({msg:'no files were uploaded'})
+                }
+                if (files.length> 5){
+                    return res.send({msg:"the files uploaded are more than five"})
+                }
                 const query = "insert into learning.products(product_name,product_description,product_file,product_path) values ($1,$2,$3,$4)"
                 const results = await pool.query(query,[
                     name,

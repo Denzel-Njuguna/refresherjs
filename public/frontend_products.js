@@ -2,9 +2,12 @@
 function submit_product(){
     const productname = document.getElementById('product_name').value.trim()
     const productdescription = document.getElementById('product_description').value.trim()
-    const image = document.getElementById('image_upload').files[0]
+    const images = document.getElementById('image_upload').files
+    if (images.length > 5){
+        return document.getElementById("responsemessage").innerText = "you have to upload less than five images"
+    }
 
-    if (!productname|| !productdescription || !image){
+    if (!productname|| !productdescription || !images){
             alert("all fields must be filled")
             return
         }
@@ -12,10 +15,12 @@ function submit_product(){
 
     formdata.append("productdescription",productdescription)
     formdata.append("productname",productname)
-    formdata.append("image",image)
+    for (let i=0;i<=images.length;i++){
+        formdata.append(images[i])
+    }
 
     
-    fetch("/testing",{
+    fetch("/products",{
         method:'POST',
         body:formdata
     })
