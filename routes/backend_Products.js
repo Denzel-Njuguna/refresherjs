@@ -26,14 +26,14 @@ const storage = multer.diskStorage({
     // The callback (cb) is called with two arguments:
     // 1. Error (if any), here it's null because no error occurs.
     // 2. The destination folder.
-    cb(null,'../components/image_uploads')
+    cb(null,path.join(__dirname,'../components/image_uploads'))
     },
     filename:(req,file,cb)=>{
         //this basically creates a unique suffix for the file using date and math fn
         const suffix = Date.now() + "_" + Math.round(Math.random() * 1e9)
         // this retrieves the file format
         const ext = path.extname(file.originalname)
-        cb = (null,file.name+"_"+ suffix+ext)
+        cb(null,file.name+"_"+ suffix+ext)
     }
 })
 
@@ -49,15 +49,16 @@ const filefilter = (req,file,cb)=>{
 const upload = multer({storage:storage,fileFilter:filefilter})
 
 productroutes.post('/products',
-        upload.array('images',5),
+        upload.array('files',5),
         postproductvalidation,
         async(req,res)=>{
             try {
+                console.log("the backend has started working")
                 const result = validationResult(req)
                 if(!result.isEmpty){
                     return res.status(400).send("it did not meet the parameters")
                 }
-                const {name,description} = req.body 
+                const {productname,productdescription} = req.body 
                 const files = req.files
                 if (!files || files.length == 0 ){
                     return res.send({msg:'no files were uploaded'})
@@ -65,19 +66,59 @@ productroutes.post('/products',
                 if (files.length> 5){
                     return res.send({msg:"the files uploaded are more than five"})
                 }
-                const query = "insert into learning.products(product_name,product_description,product_file,product_path) values ($1,$2,$3,$4)"
-                const results = await pool.query(query,[
-                    name,
-                    description,
-                    files[0].filemame,
-                    files[0].path
-                ])
-                return res.status(200).send({msg:"files added successfully "})
+
+                const filenames = files.map(file => file.filename)
+                const filepaths = files.map(file=>file.path)
+
+                const query = `insert into learning.products(
+                product_name,
+                product_description,
+                product_file1,
+                product_path1,
+                product_file2,
+                product_path2,
+                product_file3,
+                product_path3,
+                product_file4,
+                product_path4,
+                product_file5,
+                product_path5
+                )
+                values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) returning product_name`
+                const values = [
+                    productname,
+                    productdescription,
+                    filenames[0] || null,
+                    filepaths[0] || null,
+                    filenames[1] || null,
+                    filepaths[1] || null,
+                    filenames[2] || null,
+                    filepaths[2] || null,
+                    filenames[3] || null,
+                    filepaths[3] || null,
+                    filenames[4] || null,
+                    filepaths[4] || null
+                ]
+               try {
+                // in pg it returns an array
+                 const results = await pool.query(query,values)
+                 console.log(results.rows)
+                 const result_name = results.rows[0]
+                 return res.status(200).json({msg:`successfully added ${result_name} `,redirectto:'/testing/home',result:result_name})
+               } catch (error) {
+                 console.log("error when posting to the backend")
+                 return res.status(500).json({error:"internal server error",error})
+               }
             } catch (error) {
                 console.error('Error in product upload:', error);
             res.status(500).json({ message: 'Error uploading product', error: error.message });
             }
         }
     )
+
+productroutes.get('/testing/home',(req,res)=>{
+    res.sendFile(path.join(__dirname,'../public/home.html'))
+})
+
 
 module.exports = productroutes

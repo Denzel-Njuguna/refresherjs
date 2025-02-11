@@ -41,12 +41,12 @@ const fetchidvalidation = [
 ]
 
 const postproductvalidation = [
-    body("name")
+    body("productname")
         .notEmpty()
         .withMessage("this field should be filled")
         .isString()
         .withMessage("should be a string"),
-    body("description")
+    body("productdescription")
         .notEmpty()
         .withMessage("this field should be filled")
         .isString()
