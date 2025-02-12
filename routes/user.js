@@ -1,8 +1,9 @@
 const {Router} = require('express')
 const {validationResult,matchedData} = require("express-validator")
 const userroutes = Router()
+const path = require('path')
 const {postuservalidation,fetchidvalidation} = require("../utils/validation")
-const {postuser,fetchuser,fetchusers,closeconnection,checkuser} = require("../utils/db")
+const {postuser,fetchuser,fetchusers,checkuser} = require("../utils/db")
 
 userroutes.get('/users',fetchusers,(req,res)=>{
     const appusers = req.appusers
@@ -27,6 +28,7 @@ fetchuser
 userroutes.post("/users",
     postuservalidation,
     async (req,res,next)=>{
+        console.log("the backend has received the data")
         const result = validationResult(req)
         console.log(result)
         try {
@@ -42,4 +44,7 @@ userroutes.post("/users",
     checkuser,
     postuser    
 )
+userroutes.get('/testing/home',(req,res)=>{
+    res.sendFile(path.join(__dirname,'../public/home.html'))
+})
 module.exports = userroutes

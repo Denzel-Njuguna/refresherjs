@@ -10,6 +10,13 @@ const logvalidationend = (req,res,next)=>{
 }
 const postuservalidation = [
     logvalidationstart,
+    body("name")
+        .notEmpty()
+        .withMessage("this field should not be empty")
+        .isString()
+        .withMessage("should be a string")
+        .isLength({min:0,max:15})
+        .withMessage("should be of max length 15 characters"),
     body("username")
         .notEmpty()
         .withMessage("this field should not be empty")
@@ -25,7 +32,7 @@ const postuservalidation = [
             minSymbols:1,
             minNumbers:2
         })
-        .withMessage("it should atleast have 8 characters,(2) lowecase,uppercase and numbers and 1 number")
+        .withMessage("it should atleast have 8 characters,(2) lowecase,uppercase and numbers and 1 symbol")
         .isString()
         .withMessage("should be a string"),
         logvalidationend

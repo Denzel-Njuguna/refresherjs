@@ -1,5 +1,4 @@
 const {pool} = require("./db")
-const fetchidvalidation = require('./validation')
 
 
 const fetchproducts = (async(req,res)=>{

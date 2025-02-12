@@ -7,6 +7,7 @@ const {fetchidvalidation,postproductvalidation} = require('../utils/validation')
 const { error } = require("console")
 const { pool } = require("../utils/db")
 const productroutes = Router()
+exports.productroutes = productroutes
 
 productroutes.get('/products',fetchproducts)
 productroutes.get('/products/:id',

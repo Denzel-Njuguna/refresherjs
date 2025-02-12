@@ -8,7 +8,7 @@ app.use(express.json())
 app.use(routes)
 app.use(express.static("public"))
 app.get("/",(req,res)=>{
-    return res.sendFile(path.join(__dirname,"public","products.html"))
+    return res.sendFile(path.join(__dirname,"public","signup.html"))
 })
 app.listen(port,()=>{
     try{

@@ -1,17 +1,18 @@
 require("dotenv").config()
-const { request } = require("http")
-const{Client} = require("pg")
 const argon2 = require("argon2")
+const {Pool} = require('pg')
 const { matchedData } = require("express-validator")
 
 
-const pool = new Client({
+let pool
+if(!pool){
+    pool = new Pool({
     host:process.env.hostname,
     database:process.env.databasename,
     port:process.env.databaseport,
     user:process.env.databaseuser,
     password:process.env.dbpassword
-})
+})}
 
 pool.connect()
 
@@ -68,21 +69,23 @@ const hashingpassword = [
             const ismatch = argon2.verify(hashedpassword,password)
             return ismatch
         }catch(error){
-
+            return false
         }
     }
 ]
-const postuser = (async (req,res,next) => {
+const postuser = (async (req,res) => {
     console.log("posting of user has begun")
     try {
         let {password} = req.newuser
         let already_hashed_password = await hashingpassword[0](password)
+        if (already_hashed_password == false) return res.status(500).send({msg:"there was an error in storing your password"})
         console.log(already_hashed_password)
-        const query = "insert into learning.students(username,password) values ($1,$2) returning username,index"
-        const values = [req.newuser.username,already_hashed_password]
+        const query = "insert into learning.students(username,password,name) values ($1,$2,$3) returning username,index,name"
+        const values = [req.newuser.username,already_hashed_password,req.newuser.name]
         const result = await pool.query(query,values)
         const registereduser = result.rows[0]
-        return res.status(201).send({id:registereduser.id,username:registereduser.username,msg:"user added successfully "})
+        console.log(`${registereduser} was successfully put into the backend`)
+        return res.status(201).send({id:registereduser.id,username:registereduser.username,msg:`user ${registereduser.name} added successfully`,user:registereduser.name,redirectto:"/testing/home"})
     } catch (error) {
         res.status(400).send("there was an error in adding this new user")
         console.log("there was an error in posting the user",error)
